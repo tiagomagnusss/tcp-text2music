@@ -1,4 +1,5 @@
 import org.jfugue.pattern.*;
+
 import java.util.Random;
 
 public class SyntextPattern
@@ -56,6 +57,8 @@ public class SyntextPattern
    // última nota tocada
    private String lastNote;
 
+   private boolean wasLastNote = false;
+
    public SyntextPattern()
    {
       // text = txt;
@@ -69,22 +72,82 @@ public class SyntextPattern
    /**
     * Constrói a string do JFugue
     * 
-    * @param txt Texto para ser parseado.
+    * @param txt
+    *           Texto para ser parseado.
     * @return Pattern de acordo com o texto de entrada.
     */
    public Pattern parse( String txt )
    {
-      return new Pattern( txt.toString() );
+      StringBuilder output = new StringBuilder();
+      for ( int i = 0; i < text.length(); i++ )
+      {
+         char ch = text.charAt( i );
+
+         switch ( ch )
+         {
+         case 'A':
+            output.append( setNote( Notes.LA ) );
+            break;
+         case 'B':
+            output.append( setNote( Notes.SI ) );
+            break;
+         case 'C':
+            output.append( setNote( Notes.DO ) );
+            break;
+         case 'D':
+            output.append( setNote( Notes.RE ) );
+            break;
+         case 'E':
+            output.append( setNote( Notes.MI ) );
+            break;
+         case 'F':
+            output.append( setNote( Notes.FA ) );
+            break;
+         case 'G':
+            output.append( setNote( Notes.SOL ) );
+            break;
+         case 'a':
+         case 'b':
+         case 'c':
+         case 'd':
+         case 'e':
+         case 'f':
+         case 'g':
+            if ( wasLastNote )
+            {
+               output.append( lastNote );
+            }
+            else
+            {
+               output.append( Notes.PAUSE );
+            }
+            break;
+         case ' ':
+            output.append( setVolume( volume * 2 ) );
+         case 'I':
+         case 'O':
+         case 'U':
+         case 'i':
+         case 'o':
+         case 'u':
+            output.append( setInstrument( 1 ) );
+            break;
+         }
+      }
+
+      return new Pattern( output.toString() );
    }
 
    /**
     * Define o BPM.
     * 
-    * @param val Valor do BPM.
+    * @param val
+    *           Valor do BPM.
     * @return String com a string correspondente do JFugue
     */
    private String setBPM( int val )
    {
+      wasLastNote = false;
       if ( val > 0 )
          bpm = val;
       return "T" + bpm + " ";
@@ -93,11 +156,13 @@ public class SyntextPattern
    /**
     * Define o instrumento.
     * 
-    * @param val Valor do instrumento.
+    * @param val
+    *           Valor do instrumento.
     * @return String com a string correspondente do JFugue
     */
    private String setInstrument( int val )
    {
+      wasLastNote = false;
       if ( val < MAX_LIMIT )
          instrument = val;
       return "I" + instrument + " ";
@@ -106,14 +171,32 @@ public class SyntextPattern
    /**
     * Define o volume.
     * 
-    * @param val Valor do volume.
+    * @param val
+    *           Valor do volume.
     * @return String com a string correspondente do JFugue
     */
-   private String setVolumeTo( int val )
+   private String setVolume( int val )
    {
+      wasLastNote = false;
       if ( val < MAX_LIMIT )
          volume = val;
+      else
+         volume = DEFAULT_VOLUME;
       return ":CON(7," + volume + ") ";
+   }
+
+   /**
+    * Define a nota a ser tocada.
+    * 
+    * @param note
+    *           Item de nota.
+    * @return String com a string correspondente do JFugue
+    */
+   private String setNote( Notes note )
+   {
+      wasLastNote = true;
+      lastNote = note.getNota() + octave + " ";
+      return lastNote;
    }
 
 }
