@@ -1,11 +1,15 @@
+package syntext;
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
+import javax.swing.JRadioButton;
+import java.awt.BorderLayout;
 
 public class Syntext {
-
+	
 	private JFrame frame;
 
 	/**
@@ -14,13 +18,16 @@ public class Syntext {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				try 
+				{
 					Syntext window = new Syntext();
 					window.frame.setVisible(true);
 					Player player = new Player();
 					Pattern pattern = new Pattern("V0 I[Piano] Eq Ch. | Eq Ch. | Dq Eq Dq Cq   V1 I[Flute] Rw | Rw | GmajQQQ CmajQ");
 					player.play(pattern);
-				} catch (Exception e) {
+				} 
+				catch (Exception e) 
+				{
 					e.printStackTrace();
 				}
 			}
@@ -41,6 +48,8 @@ public class Syntext {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JRadioButton rdVol = new JRadioButton("Volume");
+		frame.getContentPane().add(rdVol, BorderLayout.CENTER);
 	}
-
 }
