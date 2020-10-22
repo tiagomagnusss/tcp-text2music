@@ -5,16 +5,21 @@ import java.awt.EventQueue;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
@@ -22,10 +27,19 @@ import org.jfugue.player.Player;
 @SuppressWarnings ( "serial" )
 public class Syntext extends JFrame
 {
+   private final String RESUME = "Resume";
+
+   private final String PAUSE = "Pause";
 
    private JFrame frame;
 
    private JLabel lblPlayer;
+
+   private JTable tbMap;
+
+   private FileHandler fileHandler = new FileHandler();
+
+   private Translator translator = new Translator();
 
    /**
     * Launch the application.
@@ -92,11 +106,27 @@ public class Syntext extends JFrame
       frame.getContentPane().add( lblInput );
 
       JButton btnLoad = new JButton( "Carregar arquivo..." );
-      btnLoad.setBounds( 281, 63, 143, 23 );
+      btnLoad.addActionListener( new ActionListener()
+      {
+         public void actionPerformed( ActionEvent e )
+         {
+            try
+            {
+               String fileText = fileHandler.importFile();
+               txtInput.setText( fileText );
+            }
+            catch ( IOException ex )
+            {
+               System.out.println( "I/O error: " + ex );
+            }
+         }
+      } );
+      btnLoad.setBounds( 281, 95, 143, 23 );
       frame.getContentPane().add( btnLoad );
 
       JButton btnDownload = new JButton( "Download" );
-      btnDownload.setBounds( 281, 29, 143, 23 );
+      btnDownload.setEnabled( false );
+      btnDownload.setBounds( 281, 61, 143, 23 );
       frame.getContentPane().add( btnDownload );
 
       JPanel panel = new JPanel();
@@ -112,18 +142,55 @@ public class Syntext extends JFrame
          @Override
          public void actionPerformed( ActionEvent e )
          {
+            // se desabilita até ser habilitado externamente pelo controlador da música
+            btnPlay.setEnabled( false );
+
+            Pattern result = translator.translate( txtInput.getText() );
+            // System.out.println( result.toString() );
+
+            // play.play(result);
+
             Player player = new Player();
             Pattern pattern = new Pattern( "V0 I[Piano] Eq Ch. | Dq Eq Dq Cq   V1 I[Flute] Rw | Rw | GmajQQQ CmajQ" );
-            player.play( pattern );
+            player.play( result );
          }
       } );
       panel.add( btnPlay );
 
       JButton btnPause = new JButton( "Pause" );
+      btnPause.addActionListener( new ActionListener()
+      {
+         public void actionPerformed( ActionEvent e )
+         {
+            // se está como pause, desabilita o play e muda de nome
+            if ( btnPause.getText().equals( PAUSE ) )
+            {
+               btnPause.setText( RESUME );
+               // pausar a musica
+               // play.pause()
+            }
+            else
+            {
+               btnPause.setText( PAUSE );
+               // continuar a musica
+               // play.resume()
+            }
+         }
+      } );
+      btnPause.setEnabled( false );
       btnPause.setBounds( 10, 45, 100, 23 );
       panel.add( btnPause );
 
       JButton btnStop = new JButton( "Stop" );
+      btnStop.addActionListener( new ActionListener()
+      {
+         public void actionPerformed( ActionEvent e )
+         {
+            // para a musica
+            // play.stop();
+         }
+      } );
+      btnStop.setEnabled( false );
       btnStop.setBounds( 10, 79, 100, 23 );
       panel.add( btnStop );
 
@@ -143,8 +210,44 @@ public class Syntext extends JFrame
             System.exit( 0 );
          }
       } );
-      btnExit.setBounds( 281, 119, 143, 23 );
+      btnExit.setBounds( 281, 130, 143, 23 );
       frame.getContentPane().add( btnExit );
-   }
 
+      JButton btnMap = new JButton( "Mapa de char" );
+      btnMap.addActionListener( new ActionListener()
+      {
+         public void actionPerformed( ActionEvent e )
+         {
+            JDialog dialog = new JDialog();
+            dialog.setAlwaysOnTop( true );
+            dialog.setSize( 900, 350 );
+            dialog.setModal( true );
+            dialog.setTitle( "Mapa de Caracteres" );
+            JScrollPane panel = new JScrollPane( tbMap );
+            panel.setSize( 900, 350 );
+            dialog.getContentPane().add( panel );
+            dialog.setDefaultCloseOperation( JDialog.DISPOSE_ON_CLOSE );
+            dialog.setVisible( true );
+            dialog.pack();
+         }
+      } );
+      btnMap.setBounds( 281, 27, 143, 23 );
+      frame.getContentPane().add( btnMap );
+
+      tbMap = new JTable( new DefaultTableModel(
+               new Object[][] { { "A", "Nota L\u00E1" }, { "B", "Nota Si" }, { "C", "Nota D\u00F3" }, { "D", "Nota R\u00E9" },
+                        { "E", "Nota Mi" }, { "F", "Nota F\u00E1" }, { "G", "Nota Sol" },
+                        { "Espa\u00E7o", "Dobra o volume. Se n\u00E3o for poss\u00EDvel, volta ao default (60/127)" },
+                        { "!", "Troca para o instrumento Agogo" },
+                        { "?", "Aumenta uma oitava. Se n\u00E3o for poss\u00EDvel, volta ao default (5)" },
+                        { "D\u00EDgito 0-9", "Troca para o instrumento MIDI com o valor atual + d\u00EDgito" },
+                        { "Nova linha \n", "Troca para o instrumento Tubular Bells" }, { ";", "Troca para o instrumento Pan Flute" },
+                        { ",", "Troca para o instrumento Church Organ" },
+                        { "Letras min\u00FAsculas, demais vogais e consoantes e outros caracteres",
+                                 "Se caractere anterior era nota (A a G), repete. Se n\u00E3o, pausa por um instante" }, },
+               new String[] { "Caractere", "A\u00E7\u00E3o" } ) );
+      tbMap.setBounds( 180, 161, 1, 1 );
+      tbMap.setEnabled( false );
+      tbMap.setAutoResizeMode( WIDTH );
+   }
 }
