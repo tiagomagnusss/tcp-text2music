@@ -1,17 +1,22 @@
 package syntext;
 
-import Translator;
 import org.jfugue.pattern.Pattern;
+import org.jfugue.player.Player;
+import org.jfugue.player.ManagedPlayer;
+import javax.sound.midi.Sequence;
 
 /* Esta classe é responsável por reproduzir o pattern gerado pelo translator*/
 public class Play{
 
 // Chama a Translator para construir o Pattern do JFugue
-    private String pattern = Translator();
+    private String pattern = Translator.translate(txt);
 
+    
+    Player player;
+    
 //  Inicializa o player
-	Public Play(){
-        Player pl = new Player();
+	public Play(){
+        player = new Player();
     }
 
    /**
@@ -23,9 +28,9 @@ public class Play{
     */
     public void Plays(String pattern){
 
-        pl.play( pattern );
-        Sequence sq = pl.getSequence( pattern );
-        ManagedPlayer mp = pl.getManagedPlayer();
+        player.play( pattern );
+        Sequence sq = player.getSequence( pattern );
+        ManagedPlayer mp = player.getManagedPlayer();
         mp.start( sq );
         while ( mp.isPlaying() )
         {
