@@ -124,6 +124,7 @@ public class Translator
                   break;
                case ' ':
                   output.append( setVolume( volume * 2 ) );
+                  break;
                case 'I':
                case 'O':
                case 'U':
@@ -136,17 +137,22 @@ public class Translator
                case '!':
                   // trocar para MIDI #114 (Agogo)
                   output.append( setInstrument( 114 ) );
+                  break;
                case '?':
                   output.append( setOctave( octave * 2 ) );
+                  break;
                case '\n':
                   // trocar para MIDI #15 (Tubular Bells)
                   output.append( setInstrument( 15 ) );
+                  break;
                case ';':
                   // trocar para MIDI #76 (Pan Flute)
                   output.append( setInstrument( 76 ) );
+                  break;
                case ',':
                   // trocar para MIDI #20 (Church Organ)
                   output.append( setInstrument( 20 ) );
+                  break;
                default:
                   if ( wasLastNote )
                   {
