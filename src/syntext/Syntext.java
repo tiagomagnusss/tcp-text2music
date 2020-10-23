@@ -21,6 +21,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import javax.sound.midi.Sequence;
+
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
@@ -40,6 +42,8 @@ public class Syntext extends JFrame
    private FileHandler fileHandler = new FileHandler();
 
    private Translator translator = new Translator();
+
+   private Play play = new Play();
 
    /**
     * Launch the application.
@@ -145,14 +149,16 @@ public class Syntext extends JFrame
             // se desabilita até ser habilitado externamente pelo controlador da música
             btnPlay.setEnabled( false );
 
+            // Chama a Translator para construir o Pattern do JFugue
             Pattern result = translator.translate( txtInput.getText() );
             // System.out.println( result.toString() );
 
-            // play.play(result);
+            // Chama o player para tocar o Pattern
+            play.plays(result);
 
-            Player player = new Player();
-            Pattern pattern = new Pattern( "V0 I[Piano] Eq Ch. | Dq Eq Dq Cq   V1 I[Flute] Rw | Rw | GmajQQQ CmajQ" );
-            player.play( result );
+            //Player player = new Player();
+            //Pattern pattern = new Pattern( "V0 I[Piano] Eq Ch. | Dq Eq Dq Cq   V1 I[Flute] Rw | Rw | GmajQQQ CmajQ" );
+            //player.play( result );
          }
       } );
       panel.add( btnPlay );
@@ -167,13 +173,13 @@ public class Syntext extends JFrame
             {
                btnPause.setText( RESUME );
                // pausar a musica
-               // play.pause()
+               play.pause();
             }
             else
             {
                btnPause.setText( PAUSE );
-               // continuar a musica
-               // play.resume()
+               // continua a musica
+               play.resume();
             }
          }
       } );
@@ -187,14 +193,16 @@ public class Syntext extends JFrame
          public void actionPerformed( ActionEvent e )
          {
             // para a musica
-            // play.stop();
+            play.stop();
          }
       } );
       btnStop.setEnabled( false );
       btnStop.setBounds( 10, 79, 100, 23 );
       panel.add( btnStop );
 
-      JLabel lblStatus = new JLabel( "Parado" );
+      // Inseri o que seria a nova forma de modificar o label do status
+      // JLabel lblStatus = new JLabel( "Parado" );
+      JLabel lblStatus = play.status();
       lblStatus.setBounds( 177, 49, 46, 14 );
       panel.add( lblStatus );
 
