@@ -101,15 +101,21 @@ public class Syntext extends JFrame
       frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
       frame.getContentPane().setLayout( null );
 
+      // Caixa de texto - entrada do usuário
       TextArea txtInput = new TextArea();
       txtInput.setBounds( 0, 174, 434, 87 );
       frame.getContentPane().add( txtInput );
-
-      JLabel lblInput = new JLabel( "Digite aqui seu texto" );
-      lblInput.setBounds( 10, 161, 160, 14 );
-      frame.getContentPane().add( lblInput );
-
+      
+      ////////////////// BUTTONS
+      // Inicializando botões
       JButton btnLoad = new JButton( "Carregar arquivo..." );
+      JButton btnDownload = new JButton( "Download" );   
+      JButton btnPlay = new JButton( "Play" );      
+      JButton btnPause = new JButton( "Pause" );
+      JButton btnStop = new JButton( "Stop" );
+  
+      
+      // Configuração do botão Carregar Arquivo
       btnLoad.addActionListener( new ActionListener()
       {
          public void actionPerformed( ActionEvent e )
@@ -128,7 +134,8 @@ public class Syntext extends JFrame
       btnLoad.setBounds( 281, 95, 143, 23 );
       frame.getContentPane().add( btnLoad );
 
-      JButton btnDownload = new JButton( "Download" );
+
+      // Configuração do botão Download
       btnDownload.setEnabled( false );
       btnDownload.setBounds( 281, 61, 143, 23 );
       frame.getContentPane().add( btnDownload );
@@ -139,7 +146,7 @@ public class Syntext extends JFrame
       frame.getContentPane().add( panel );
       panel.setLayout( null );
 
-      JButton btnPlay = new JButton( "Play" );
+      // Configuração do botão Play
       btnPlay.setBounds( 10, 11, 100, 23 );
       btnPlay.addActionListener( new ActionListener()
       {
@@ -151,19 +158,19 @@ public class Syntext extends JFrame
 
             // Chama a Translator para construir o Pattern do JFugue
             Pattern result = translator.translate( txtInput.getText() );
-            // System.out.println( result.toString() );
 
             // Chama o player para tocar o Pattern
             play.plays(result);
+            
+            // Habilita os botões de Pause e Stop
+            btnPause.setEnabled( true );
+            btnStop.setEnabled( true );
 
-            //Player player = new Player();
-            //Pattern pattern = new Pattern( "V0 I[Piano] Eq Ch. | Dq Eq Dq Cq   V1 I[Flute] Rw | Rw | GmajQQQ CmajQ" );
-            //player.play( result );
          }
       } );
       panel.add( btnPlay );
 
-      JButton btnPause = new JButton( "Pause" );
+      // Configuração do botão Pause
       btnPause.addActionListener( new ActionListener()
       {
          public void actionPerformed( ActionEvent e )
@@ -187,24 +194,36 @@ public class Syntext extends JFrame
       btnPause.setBounds( 10, 45, 100, 23 );
       panel.add( btnPause );
 
-      JButton btnStop = new JButton( "Stop" );
+      // Configuração do botão Stop
       btnStop.addActionListener( new ActionListener()
       {
          public void actionPerformed( ActionEvent e )
          {
             // para a musica
             play.stop();
+            
+            // Desabilita os botões de Pause e Stop
+            btnPause.setEnabled( false );
+            btnStop.setEnabled( false);           
+            
+            // Habilita botão Play
+            btnPlay.setEnabled( true);
          }
       } );
       btnStop.setEnabled( false );
       btnStop.setBounds( 10, 79, 100, 23 );
       panel.add( btnStop );
 
-      // Inseri o que seria a nova forma de modificar o label do status
-      // JLabel lblStatus = new JLabel( "Parado" );
+      ////////////////// LABELS
+      
+      // Modificação do label Status para Pausado ou Reproduzindo
       JLabel lblStatus = play.status();
       lblStatus.setBounds( 177, 49, 46, 14 );
       panel.add( lblStatus );
+      
+      JLabel lblInput = new JLabel( "Digite aqui seu texto" );
+      lblInput.setBounds( 10, 161, 160, 14 );
+      frame.getContentPane().add( lblInput );
 
       lblPlayer = new JLabel( "Player" );
       lblPlayer.setBounds( 10, 11, 46, 14 );
@@ -221,6 +240,7 @@ public class Syntext extends JFrame
       btnExit.setBounds( 281, 130, 143, 23 );
       frame.getContentPane().add( btnExit );
 
+   // Configuração do menu Mapa de char
       JButton btnMap = new JButton( "Mapa de char" );
       btnMap.addActionListener( new ActionListener()
       {

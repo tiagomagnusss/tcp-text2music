@@ -10,7 +10,10 @@ import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import org.jfugue.player.ManagedPlayer;
 
+@SuppressWarnings("unused")
+
 /* Esta classe √© respons√°vel por reproduzir o pattern gerado pelo translator*/
+
 public class Play{
    
     Player player;
@@ -21,42 +24,49 @@ public class Play{
 //  Inicializa o player
 	public Play(){
         player = new Player();
+
+        // Define mp como controlador do player e inicia reproduÁ„o
+        mp = player.getManagedPlayer();       
+        
     }
 
    /**
-    * Toca o Pattern e mant√©m atualizado o status
+    * Toca o Pattern
     * 
     * @param pattern
     *           Texto traduzido em pattern do JFugue
-    * @return String Parado/Reproduzindo
+    * @return void
     */
     public void plays(Pattern pattern){
-
-        // Inicia reprodu√ß√£o
-        player.play( pattern );
 
         // Gera sequencia a ser usada pelo Managed Player
         sq = player.getSequence( pattern );
 
-        // Define mp como controlador do player
-        mp = player.getManagedPlayer();
-        mp.start( sq );
-
+        // Cuida das exceÁıes do ManagedPlayer
+        try {
+			mp.start(sq);
+		} catch (InvalidMidiDataException e) {
+			e.printStackTrace();
+		} catch (MidiUnavailableException e) {
+			e.printStackTrace();
+		}
     }
 
+    /**
+    * Atualiza o label Status para Reproduzindo/Pausado
+    */
     public JLabel status(){
-        while ( mp.isPlaying() )
+        if ( mp.isPlaying() )
         {
             return status = new JLabel("Reproduzindo");
         }
-            return status = new JLabel("Parado");  
+        else {
+            return status = new JLabel("Parado");
+        }
     }
 
     /**
     * Pausa o pattern sendo tocado
-    * 
-    * @param void
-    * @return void
     */
     public void pause(){
         mp.pause();
@@ -64,9 +74,6 @@ public class Play{
 
     /**
     * Retorna a reproduzir a partir do ponto onde foi pausado
-    * 
-    * @param void
-    * @return void
     */
     public void resume(){
         mp.resume();
@@ -74,9 +81,6 @@ public class Play{
     
     /**
     * Volta a reproduzir o pattern desde o in√≠cio
-    * 
-    * @param void
-    * @return void 
     */
     public void stop(){
         mp.reset();
