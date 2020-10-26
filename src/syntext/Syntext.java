@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -22,6 +23,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfugue.pattern.Pattern;
+import java.awt.Font;
+import java.awt.Toolkit;
 
 @SuppressWarnings ( "serial" )
 public class Syntext extends JFrame
@@ -95,36 +98,39 @@ public class Syntext extends JFrame
 
       // Configura��es da janela
       frmSyntext = new JFrame();
+      frmSyntext.setIconImage(Toolkit.getDefaultToolkit().getImage(Syntext.class.getResource("/icons/icons8_treble_clef_50px.png")));
+      frmSyntext.setResizable(false);
+      frmSyntext.setFont(new Font("Arial", Font.PLAIN, 18));
       frmSyntext.setTitle("Syntext");
-      frmSyntext.setBounds( 100, 100, 552, 389 );
+      frmSyntext.setBounds( 100, 100, 608, 442 );
       frmSyntext.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
       frmSyntext.getContentPane().setLayout( null );
 
       // Caixa de texto - entrada do usuário
       TextArea txtInput = new TextArea();
-      txtInput.setBounds( 0, 174, 526, 166 );
+      txtInput.setBounds( 10, 213, 582, 190 );
       frmSyntext.getContentPane().add( txtInput );
       
       // Painel
       JPanel panel = new JPanel();
+      panel.setOpaque(false);
       panel.setBorder( new LineBorder( new Color( 0, 0, 0 ) ) );
-      panel.setBounds( 10, 29, 354, 113 );
+      panel.setBounds( 10, 29, 407, 124 );
       frmSyntext.getContentPane().add( panel );
       panel.setLayout( null );
       
 
       ////////////////// LABELS
-      JLabel lblNewLabel = new JLabel("Status:");
-      lblNewLabel.setBounds(180, 49, 35, 14);
-      panel.add(lblNewLabel);
+      JLabel lblIndicator = new JLabel("Status:");
+      lblIndicator.setBounds(242, 193, 35, 14);
+      frmSyntext.getContentPane().add(lblIndicator);
       
       JLabel lblStatus = new JLabel( "Pausado" );
-      lblStatus.setBounds(217, 49, 105, 14);
-      panel.add(lblStatus);
-
-      
+      lblStatus.setBounds(278, 193, 105, 14);
+      frmSyntext.getContentPane().add(lblStatus);
+            
       JLabel lblInput = new JLabel( "Digite aqui seu texto" );
-      lblInput.setBounds( 10, 161, 160, 14 );
+      lblInput.setBounds( 10, 193, 160, 14 );
       frmSyntext.getContentPane().add( lblInput );
 
       lblPlayer = new JLabel( "Player" );
@@ -139,7 +145,7 @@ public class Syntext extends JFrame
             System.exit( 0 );
          }
       } );
-      btnExit.setBounds( 368, 131, 143, 23 );
+      btnExit.setBounds( 427, 130, 143, 23 );
       frmSyntext.getContentPane().add( btnExit );
 
    // Configuração do menu Mapa de char
@@ -151,7 +157,7 @@ public class Syntext extends JFrame
             JDialog dialog = new JDialog();
             dialog.setAlwaysOnTop( true );
             dialog.setSize( 900, 350 );
-            dialog.setModal( true );
+            dialog.setModal( false );
             dialog.setTitle( "Mapa de Caracteres" );
             JScrollPane panel = new JScrollPane( tbMap );
             panel.setSize( 900, 350 );
@@ -161,7 +167,7 @@ public class Syntext extends JFrame
             dialog.pack();
          }
       } );
-      btnMap.setBounds( 368, 29, 143, 23 );
+      btnMap.setBounds( 427, 29, 143, 23 );
       frmSyntext.getContentPane().add( btnMap );
 
       tbMap = new JTable( new DefaultTableModel(
@@ -179,6 +185,18 @@ public class Syntext extends JFrame
       tbMap.setBounds( 180, 161, 1, 1 );
       tbMap.setEnabled( false );
       tbMap.setAutoResizeMode( WIDTH );
+      
+      JLabel lblTitle = new JLabel("");
+      lblTitle.setBounds(128, 11, 181, 91);
+      panel.add(lblTitle);
+      lblTitle.setOpaque(true);
+      lblTitle.setIcon(new ImageIcon(Syntext.class.getResource("/icons/font3.png")));
+      
+      JLabel lblIcon = new JLabel("");
+      lblIcon.setIcon(new ImageIcon(Syntext.class.getResource("/icons/icons8_treble_clef_50px.png")));
+      lblIcon.setBounds(319, 34, 64, 50);
+      panel.add(lblIcon);
+
       
       ////////////////// BUTTONS
       // Inicializando botões
@@ -205,13 +223,13 @@ public class Syntext extends JFrame
             }
          }
       } );
-      btnLoad.setBounds( 368, 96, 143, 23 );
+      btnLoad.setBounds( 427, 96, 143, 23 );
       frmSyntext.getContentPane().add( btnLoad );
 
 
       // Configuração do botão Download
       btnDownload.setEnabled( false );
-      btnDownload.setBounds( 368, 61, 143, 23 );
+      btnDownload.setBounds( 427, 62, 143, 23 );
       frmSyntext.getContentPane().add( btnDownload );
 
       // Configuração do botao Play
@@ -301,8 +319,6 @@ public class Syntext extends JFrame
       btnStop.setEnabled( false );
       btnStop.setBounds( 10, 79, 100, 23 );
       panel.add( btnStop );
-      
-
      
    }
 }
