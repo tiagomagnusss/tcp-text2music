@@ -1,7 +1,5 @@
 package syntext;
 
-import javax.swing.JLabel;
-
 import javax.sound.midi.Sequence;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -10,8 +8,6 @@ import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import org.jfugue.player.ManagedPlayer;
 
-@SuppressWarnings("unused")
-
 /* Esta classe Ã© responsÃ¡vel por reproduzir o pattern gerado pelo translator*/
 
 public class Play{
@@ -19,13 +15,13 @@ public class Play{
     Player player;
     ManagedPlayer mp;
     Sequence sq;
-    JLabel status;
+    String status;
 
 //  Inicializa o player
 	public Play(){
         player = new Player();
 
-        // Define mp como controlador do player e inicia reprodução
+        // Define mp como controlador do player e inicia reproduï¿½ï¿½o
         mp = player.getManagedPlayer();       
         
     }
@@ -42,7 +38,7 @@ public class Play{
         // Gera sequencia a ser usada pelo Managed Player
         sq = player.getSequence( pattern );
 
-        // Cuida das exceções do ManagedPlayer
+        // Cuida das exceï¿½ï¿½es do ManagedPlayer
         try {
 			mp.start(sq);
 		} catch (InvalidMidiDataException e) {
@@ -55,14 +51,17 @@ public class Play{
     /**
     * Atualiza o label Status para Reproduzindo/Pausado
     */
-    public JLabel status(){
+    public String status(){
+
         if ( mp.isPlaying() )
         {
-            return status = new JLabel("Reproduzindo");
+            status = "Reproduzindo";
         }
         else {
-            return status = new JLabel("Parado");
+            status = "Parado";
         }
+        
+        return status;
     }
 
     /**
