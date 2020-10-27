@@ -30,9 +30,13 @@ import java.awt.Toolkit;
 @SuppressWarnings ( "serial" )
 public class Syntext extends JFrame
 {
-	private final String RESUME = "Resume";
+	private final String RESUME = "Continuar";
 
-	private final String PAUSE = "Pause";
+	private final String PAUSE = "Pausar";
+	
+	private final String PLAY = "Tocar";
+	
+	private final String STOP = "Parar";
 
 	private JFrame frame;
 
@@ -110,10 +114,10 @@ public class Syntext extends JFrame
 		////////////////// BUTTONS
 		// Inicializando bot�es
 		JButton btnLoad = new JButton( "Carregar arquivo..." );
-		JButton btnDownload = new JButton( "Download" );   
-		JButton btnPlay = new JButton( "Play" );      
-		JButton btnPause = new JButton( "Pause" );
-		JButton btnStop = new JButton( "Stop" );
+		JButton btnDownload = new JButton( "Salvar em formato Midi" );   
+		JButton btnPlay = new JButton( PLAY );      
+		JButton btnPause = new JButton( PAUSE );
+		JButton btnStop = new JButton( STOP );
 
 
 		// Configura��o do bot�o Carregar Arquivo
@@ -177,13 +181,11 @@ public class Syntext extends JFrame
 				Pattern result = translator.translate( txtInput.getText() );
 
 				// Chama o player para tocar o Pattern
-				play.plays(result);
-				
+				play.plays(result);				
 
 				// Habilita os bot�es de Pause e Stop
 				btnPause.setEnabled( true );
 				btnStop.setEnabled( true );
-
 			}
 		} );
 		panel.add( btnPlay );
@@ -220,9 +222,11 @@ public class Syntext extends JFrame
 				// para a musica
 				play.stop();
 
-				// Desabilita os bot�es de Pause e Stop
+				// Desabilita os bot�es de Pause e Stop e atualiza o label do pause
 				btnPause.setEnabled( false );
+				btnPause.setText( PAUSE );
 				btnStop.setEnabled( false);           
+								
 
 				// Habilita bot�o Play
 				btnPlay.setEnabled( true);
@@ -235,7 +239,7 @@ public class Syntext extends JFrame
 		////////////////// LABELS
 
 		// Modifica��o do label Status para Pausado ou Reproduzindo
-		JLabel lblStatus = play.status();
+		JLabel lblStatus = new JLabel(play.status());
 		lblStatus.setBounds( 177, 49, 46, 14 );
 		panel.add( lblStatus );
 
@@ -259,7 +263,7 @@ public class Syntext extends JFrame
 		frame.getContentPane().add( btnExit );
 
 		// Configura��o do menu Mapa de char
-		JButton btnMap = new JButton( "Mapa de char" );
+		JButton btnMap = new JButton( "Mapa de Caracteres" );
 		btnMap.addActionListener( new ActionListener()
 		{
 			public void actionPerformed( ActionEvent e )
