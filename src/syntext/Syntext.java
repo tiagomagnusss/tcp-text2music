@@ -30,15 +30,15 @@ import java.awt.Toolkit;
 @SuppressWarnings ( "serial" )
 public class Syntext extends JFrame
 {
-	private final String RESUME = "Continuar";
+	private final String RESUME = "Resumir";
 
 	private final String PAUSE = "Pausar";
 	
-	private final String PLAY = "Tocar";
-	
 	private final String STOP = "Parar";
+	
+	private final String PLAY = "Reproduzir";
 
-	private JFrame frame;
+	private JFrame frmSyntext;
 
 	private JLabel lblPlayer;
 
@@ -51,7 +51,7 @@ public class Syntext extends JFrame
 	private Play play = new Play();
 
 	/**
-	 * Launch the application.
+	 * Lança a aplicação
 	 */
 	public static void main( String[] args )
 	{
@@ -62,7 +62,7 @@ public class Syntext extends JFrame
 				try
 				{
 					Syntext window = new Syntext();
-					window.frame.setVisible( true );
+					window.frmSyntext.setVisible( true );
 				}
 				catch ( Exception e )
 				{
@@ -73,7 +73,7 @@ public class Syntext extends JFrame
 	}
 
 	/**
-	 * Create the application.
+	 * Cria a aplicação
 	 */
 	public Syntext()
 	{
@@ -85,7 +85,7 @@ public class Syntext extends JFrame
 	{}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializa os conteúdos da aplicação
 	 */
 	private void initialize()
 	{
@@ -101,155 +101,46 @@ public class Syntext extends JFrame
 			System.out.println( "LAF error: " + e );
 		}
 
-		frame = new JFrame();
-		frame.setBounds( 100, 100, 450, 300 );
-		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		frame.getContentPane().setLayout( null );
+		// Configura趥s da janela
+		frmSyntext = new JFrame();
+		frmSyntext.setIconImage(Toolkit.getDefaultToolkit().getImage(Syntext.class.getResource("/icons/icons8_treble_clef_50px.png")));
+		frmSyntext.setResizable(false);
+		frmSyntext.setFont(new Font("Arial", Font.PLAIN, 18));
+		frmSyntext.setTitle("Syntext");
+		frmSyntext.setBounds( 100, 100, 608, 442 );
+		frmSyntext.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		frmSyntext.getContentPane().setLayout( null );
 
-		// Caixa de texto - entrada do usu�rio
+		// Caixa de texto - entrada do usuário
 		TextArea txtInput = new TextArea();
-		txtInput.setBounds( 0, 174, 434, 87 );
-		frame.getContentPane().add( txtInput );
+		txtInput.setBounds( 10, 213, 582, 190 );
+		frmSyntext.getContentPane().add( txtInput );
 
-		////////////////// BUTTONS
-		// Inicializando bot�es
-		JButton btnLoad = new JButton( "Carregar arquivo..." );
-		JButton btnDownload = new JButton( "Salvar em formato Midi" );   
-		JButton btnPlay = new JButton( PLAY );      
-		JButton btnPause = new JButton( PAUSE );
-		JButton btnStop = new JButton( STOP );
-
-
-		// Configura��o do bot�o Carregar Arquivo
-		btnLoad.addActionListener( new ActionListener()
-		{
-			public void actionPerformed( ActionEvent e )
-			{
-				try
-				{
-					String fileText = fileHandler.importFile();
-					txtInput.setText( fileText );
-				}
-				catch ( IOException ex )
-				{
-					JOptionPane.showMessageDialog(frame, "Ocorreu um erro ao ler o arquivo:\n" + ex);
-				}
-			}
-		} );
-		btnLoad.setBounds( 281, 95, 143, 23 );
-		frame.getContentPane().add( btnLoad );
-
-
-		// Configura��o do bot�o Download
-		btnDownload.setBounds( 281, 61, 143, 23 );
-		frame.getContentPane().add( btnDownload );
-		btnDownload.addActionListener( new ActionListener()
-		{
-			@Override
-			public void actionPerformed( ActionEvent e )
-			{
-				try
-				{
-					// Chama a Translator para construir o Pattern do JFugue
-					Pattern result = translator.translate( txtInput.getText() );
-					fileHandler.saveFile(result);
-				}
-				catch ( IOException ex )
-				{
-					JOptionPane.showMessageDialog(frame, "Ocorreu um erro ao salvar o arquivo:\n" + ex);
-				}
-			}
-		} );
-
+		// Painel
 		JPanel panel = new JPanel();
+		panel.setOpaque(false);
 		panel.setBorder( new LineBorder( new Color( 0, 0, 0 ) ) );
-		panel.setBounds( 10, 29, 261, 113 );
-		frame.getContentPane().add( panel );
+		panel.setBounds( 10, 29, 407, 124 );
+		frmSyntext.getContentPane().add( panel );
 		panel.setLayout( null );
 
-		// Configura��o do bot�o Play
-		btnPlay.setBounds( 10, 11, 100, 23 );
-		btnPlay.addActionListener( new ActionListener()
-		{
-			@Override
-			public void actionPerformed( ActionEvent e )
-			{
-				// se desabilita até ser habilitado externamente pelo controlador da música
-				btnPlay.setEnabled( false );
-
-				// Chama a Translator para construir o Pattern do JFugue
-				Pattern result = translator.translate( txtInput.getText() );
-
-				// Chama o player para tocar o Pattern
-				play.plays(result);				
-
-				// Habilita os bot�es de Pause e Stop
-				btnPause.setEnabled( true );
-				btnStop.setEnabled( true );
-			}
-		} );
-		panel.add( btnPlay );
-
-		// Configura��o do bot�o Pause
-		btnPause.addActionListener( new ActionListener()
-		{
-			public void actionPerformed( ActionEvent e )
-			{
-				// se está como pause, desabilita o play e muda de nome
-				if ( btnPause.getText().equals( PAUSE ) )
-				{
-					btnPause.setText( RESUME );
-					// pausar a musica
-					play.pause();
-				}
-				else
-				{
-					btnPause.setText( PAUSE );
-					// continua a musica
-					play.resume();
-				}
-			}
-		} );
-		btnPause.setEnabled( false );
-		btnPause.setBounds( 10, 45, 100, 23 );
-		panel.add( btnPause );
-
-		// Configura��o do bot�o Stop
-		btnStop.addActionListener( new ActionListener()
-		{
-			public void actionPerformed( ActionEvent e )
-			{
-				// para a musica
-				play.stop();
-
-				// Desabilita os bot�es de Pause e Stop e atualiza o label do pause
-				btnPause.setEnabled( false );
-				btnPause.setText( PAUSE );
-				btnStop.setEnabled( false);           
-								
-
-				// Habilita bot�o Play
-				btnPlay.setEnabled( true);
-			}
-		} );
-		btnStop.setEnabled( false );
-		btnStop.setBounds( 10, 79, 100, 23 );
-		panel.add( btnStop );
 
 		////////////////// LABELS
+		JLabel lblIndicator = new JLabel("Status:");
+		lblIndicator.setBounds(242, 193, 35, 14);
+		frmSyntext.getContentPane().add(lblIndicator);
 
-		// Modifica��o do label Status para Pausado ou Reproduzindo
-		JLabel lblStatus = new JLabel(play.status());
-		lblStatus.setBounds( 177, 49, 46, 14 );
-		panel.add( lblStatus );
+		JLabel lblStatus = new JLabel( "Pausado" );
+		lblStatus.setBounds(278, 193, 105, 14);
+		frmSyntext.getContentPane().add(lblStatus);
 
 		JLabel lblInput = new JLabel( "Digite aqui seu texto" );
-		lblInput.setBounds( 10, 161, 160, 14 );
-		frame.getContentPane().add( lblInput );
+		lblInput.setBounds( 10, 193, 160, 14 );
+		frmSyntext.getContentPane().add( lblInput );
 
 		lblPlayer = new JLabel( "Player" );
 		lblPlayer.setBounds( 10, 11, 46, 14 );
-		frame.getContentPane().add( lblPlayer );
+		frmSyntext.getContentPane().add( lblPlayer );
 
 		JButton btnExit = new JButton( "Sair" );
 		btnExit.addActionListener( new ActionListener()
@@ -259,10 +150,10 @@ public class Syntext extends JFrame
 				System.exit( 0 );
 			}
 		} );
-		btnExit.setBounds( 281, 130, 143, 23 );
-		frame.getContentPane().add( btnExit );
+		btnExit.setBounds( 427, 130, 143, 23 );
+		frmSyntext.getContentPane().add( btnExit );
 
-		// Configura��o do menu Mapa de char
+		// Configuração do menu Mapa de char
 		JButton btnMap = new JButton( "Mapa de Caracteres" );
 		btnMap.addActionListener( new ActionListener()
 		{
@@ -271,7 +162,7 @@ public class Syntext extends JFrame
 				JDialog dialog = new JDialog();
 				dialog.setAlwaysOnTop( true );
 				dialog.setSize( 900, 350 );
-				dialog.setModal( true );
+				dialog.setModal( false );
 				dialog.setTitle( "Mapa de Caracteres" );
 				JScrollPane panel = new JScrollPane( tbMap );
 				panel.setSize( 900, 350 );
@@ -281,8 +172,8 @@ public class Syntext extends JFrame
 				dialog.pack();
 			}
 		} );
-		btnMap.setBounds( 281, 27, 143, 23 );
-		frame.getContentPane().add( btnMap );
+		btnMap.setBounds( 427, 29, 143, 23 );
+		frmSyntext.getContentPane().add( btnMap );
 
 		tbMap = new JTable( new DefaultTableModel(
 				new Object[][] { { "A", "Nota L\u00E1" }, { "B", "Nota Si" }, { "C", "Nota D\u00F3" }, { "D", "Nota R\u00E9" },
@@ -299,5 +190,156 @@ public class Syntext extends JFrame
 		tbMap.setBounds( 180, 161, 1, 1 );
 		tbMap.setEnabled( false );
 		tbMap.setAutoResizeMode( WIDTH );
+
+		JLabel lblTitle = new JLabel("");
+		lblTitle.setBounds(128, 11, 181, 91);
+		panel.add(lblTitle);
+		lblTitle.setOpaque(true);
+		lblTitle.setIcon(new ImageIcon(Syntext.class.getResource("/icons/font3.png")));
+
+		JLabel lblIcon = new JLabel("");
+		lblIcon.setIcon(new ImageIcon(Syntext.class.getResource("/icons/icons8_treble_clef_50px.png")));
+		lblIcon.setBounds(319, 34, 64, 50);
+		panel.add(lblIcon);
+
+
+		////////////////// BUTTONS
+		// Inicializando botões
+		JButton btnLoad = new JButton( "Carregar arquivo..." );
+		JButton btnDownload = new JButton( "Salvar em formato Midi" );   
+		JButton btnPlay = new JButton( PLAY );      
+		JButton btnPause = new JButton( PAUSE );
+		JButton btnStop = new JButton( STOP );
+
+
+		// Configuração do botão Carregar Arquivo
+		btnLoad.addActionListener( new ActionListener()
+		{
+			public void actionPerformed( ActionEvent e )
+			{
+				try
+				{
+					String fileText = fileHandler.importFile();
+					txtInput.setText( fileText );
+				}
+				catch ( IOException ex )
+				{
+					JOptionPane.showMessageDialog(frmSyntext, "Ocorreu um erro ao ler o arquivo:\n" + ex);
+				}
+			}
+		} );
+		btnLoad.setBounds( 427, 96, 143, 23 );
+		frmSyntext.getContentPane().add( btnLoad );
+
+
+		// Configura��o do bot�o Download
+		btnDownload.setBounds( 427, 62, 143, 23 );
+		frmSyntext.getContentPane().add( btnDownload );
+		btnDownload.addActionListener( new ActionListener()
+		{
+			@Override
+			public void actionPerformed( ActionEvent e )
+			{
+				try
+				{
+					// Chama a Translator para construir o Pattern do JFugue
+					Pattern result = translator.translate( txtInput.getText() );
+					fileHandler.saveFile(result);
+				}
+				catch ( IOException ex )
+				{
+					JOptionPane.showMessageDialog(frmSyntext, "Ocorreu um erro ao salvar o arquivo:\n" + ex);
+				}
+			}
+		} );
+
+		// Configuração do botao Play
+		btnPlay.setBounds( 10, 11, 100, 23 );
+		btnPlay.addActionListener( new ActionListener()
+		{
+			@Override
+			public void actionPerformed( ActionEvent e )
+			{
+				// se desabilita até ser habilitado externamente pelo controlador da música
+				btnPlay.setEnabled( false );
+
+				// Chama a Translator para construir o Pattern do JFugue
+				Pattern result = translator.translate( txtInput.getText() );
+
+				// Chama o player para tocar o Pattern
+				play.plays(result);
+
+				// Habilita os botões de Pause e Stop
+				btnPause.setEnabled( true );
+				btnStop.setEnabled( true );
+
+				// Atualiza status
+				lblStatus.setText( play.status() );
+
+			}
+		} );
+		panel.add( btnPlay );
+
+		// Configuração do botão Pause
+		btnPause.addActionListener( new ActionListener()
+		{
+			public void actionPerformed( ActionEvent e )
+			{
+				// se está como pause, desabilita o play e muda de nome
+				if ( btnPause.getText().equals( PAUSE ) )
+				{
+					btnPause.setText( RESUME );
+					// pausar a musica
+					play.pause();
+
+					// Atualiza status
+					lblStatus.setText( play.status() );
+				}
+				else
+				{
+					btnPause.setText( PAUSE );
+					// continua a musica
+					play.resume();
+
+					// Atualiza status
+					lblStatus.setText( play.status() );
+				}           
+
+			}
+		} );
+		btnPause.setEnabled( false );
+		btnPause.setBounds( 10, 45, 100, 23 );
+		panel.add( btnPause );
+
+		// Configuração do botão Stop
+		btnStop.addActionListener( new ActionListener()
+		{
+			public void actionPerformed( ActionEvent e )
+			{
+				// para a musica
+				play.stop();
+
+				// Desabilita os botões de Pause e Stop
+				btnPause.setEnabled( false );
+				btnStop.setEnabled( false );           
+
+				// Habilita botão Play
+				btnPlay.setEnabled( true );
+
+				// Atualiza status
+				lblStatus.setText( play.status() );
+
+				// se está como resume, muda para pause
+				if ( btnPause.getText().equals( RESUME ) )
+				{
+					btnPause.setText( PAUSE );
+				}
+
+			}
+		} );
+		btnStop.setEnabled( false );
+		btnStop.setBounds( 10, 79, 100, 23 );
+		panel.add( btnStop );
+
 	}
 }
