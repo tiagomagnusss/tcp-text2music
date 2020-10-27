@@ -232,7 +232,7 @@ public class Syntext extends JFrame
 		frmSyntext.getContentPane().add( btnLoad );
 
 
-		// Configura��o do bot�o Download
+		// Configura��o do botão Download
 		btnDownload.setBounds( 427, 62, 143, 23 );
 		frmSyntext.getContentPane().add( btnDownload );
 		btnDownload.addActionListener( new ActionListener()
@@ -244,6 +244,8 @@ public class Syntext extends JFrame
 				{
 					// Chama a Translator para construir o Pattern do JFugue
 					Pattern result = translator.translate( txtInput.getText() );
+					
+					// Abre a caixa de diálogo para converter o pattern em arquivo
 					fileHandler.saveFile(result);
 				}
 				catch ( IOException ex )
