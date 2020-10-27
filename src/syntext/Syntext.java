@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -22,10 +23,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
-import javax.sound.midi.Sequence;
-
 import org.jfugue.pattern.Pattern;
-import org.jfugue.player.Player;
+import java.awt.Font;
+import java.awt.Toolkit;
 
 @SuppressWarnings ( "serial" )
 public class Syntext extends JFrame
