@@ -4,9 +4,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.jfugue.pattern.Pattern;
+import org.jfugue.midi.MidiFileManager;
 
 public class FileHandler
 {
@@ -49,31 +55,50 @@ public class FileHandler
    }
 
    /**
-    * Salva o arquivo MIDI.
+    * Abre um prompt para salvar um arquivo Midi a partir de um Pattern.
     * 
-    * @TODO
+    * @param pattern
+    *           Texto traduzido em pattern do JFugue
+    * @throws IOException
     */
-   public void saveFile()
+   public void saveFile(Pattern pattern)
+   	throws IOException
    {
-
+	   JFrame parentFrame = new JFrame();
+	   JFileChooser fileChooser = new JFileChooser();
+	   fileChooser.setDialogTitle("Especifique um local para salvar...");   
+	   
+	   fileChooser.setAcceptAllFileFilterUsed( false );
+	   fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( "Arquivo Midi (.mid)", "mid" ) );
+	    
+	   int userSelection = fileChooser.showSaveDialog(parentFrame);
+	    
+	   File file = new File(fileChooser.getSelectedFile()+".mid");
+	   
+	   if (userSelection == JFileChooser.APPROVE_OPTION) {
+	       
+	       OutputStream output = new FileOutputStream(file);
+		   MidiFileManager.savePatternToMidi(pattern, output);
+		   output.close();
+	   }   	   
    }
 
    /**
-    * Abre o prompt para buscar um arquivo.
+    * Abre o prompt para buscar um arquivo para leitura.
     * 
     * @return Arquivo selecionado ou nulo se não selecionou.
     */
    private File fileSearch()
    {
       File file = null;
-      JFileChooser jfc = new JFileChooser( System.getProperty( "user.home" ) + "/Desktop" );
-      jfc.setDialogTitle( "Selecione um arquivo texto..." );
+      JFileChooser fileChooser = new JFileChooser( System.getProperty( "user.home" ) + "/Desktop" );
+      fileChooser.setDialogTitle( "Selecione um arquivo texto..." );
 
-      jfc.setAcceptAllFileFilterUsed( false );
-      jfc.addChoosableFileFilter( new FileNameExtensionFilter( ".txt", "txt" ) );
+      fileChooser.setAcceptAllFileFilterUsed( false );
+      fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( "Arquivo de texto (.txt)", "txt" ) );
 
-      if ( jfc.showOpenDialog( null ) == JFileChooser.APPROVE_OPTION )
-         file = jfc.getSelectedFile();
+      if ( fileChooser.showOpenDialog( null ) == JFileChooser.APPROVE_OPTION )
+         file = fileChooser.getSelectedFile();
 
       return file;
    }
