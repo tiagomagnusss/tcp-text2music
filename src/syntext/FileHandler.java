@@ -2,17 +2,17 @@ package syntext;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jfugue.pattern.Pattern;
 import org.jfugue.midi.MidiFileManager;
+import org.jfugue.pattern.Pattern;
 
 public class FileHandler
 {
@@ -61,26 +61,26 @@ public class FileHandler
     *           Texto traduzido em pattern do JFugue
     * @throws IOException
     */
-   public void saveFile(Pattern pattern)
-   	throws IOException
+   public void saveFile( Pattern pattern )
+      throws IOException
    {
-	   JFrame parentFrame = new JFrame();
-	   JFileChooser fileChooser = new JFileChooser();
-	   fileChooser.setDialogTitle("Especifique um local para salvar...");   
-	   
-	   fileChooser.setAcceptAllFileFilterUsed( false );
-	   fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( "Arquivo Midi (.mid)", "mid" ) );
-	    
-	   int userSelection = fileChooser.showSaveDialog(parentFrame);
-	    
-	   File file = new File(fileChooser.getSelectedFile()+".mid");
-	   
-	   if (userSelection == JFileChooser.APPROVE_OPTION) {
-	       
-	       OutputStream output = new FileOutputStream(file);
-		   MidiFileManager.savePatternToMidi(pattern, output);
-		   output.close();
-	   }   	   
+      JFrame parentFrame = new JFrame();
+      JFileChooser fileChooser = new JFileChooser();
+      fileChooser.setDialogTitle( "Especifique um local para salvar..." );
+
+      fileChooser.setAcceptAllFileFilterUsed( false );
+      fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( "Arquivo Midi (.mid)", "mid" ) );
+
+      int userSelection = fileChooser.showSaveDialog( parentFrame );
+
+      File file = new File( fileChooser.getSelectedFile() + ".mid" );
+
+      if ( userSelection == JFileChooser.APPROVE_OPTION )
+      {
+         OutputStream output = new FileOutputStream( file );
+         MidiFileManager.savePatternToMidi( pattern, output );
+         output.close();
+      }
    }
 
    /**
