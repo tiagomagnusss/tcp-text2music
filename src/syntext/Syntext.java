@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.sound.midi.Sequence;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -26,6 +27,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfugue.pattern.Pattern;
+import org.jfugue.player.ManagedPlayerListener;
 
 @SuppressWarnings ( "serial" )
 public class Syntext extends JFrame
@@ -49,13 +51,6 @@ public class Syntext extends JFrame
    private Translator translator = new Translator();
 
    private Play play;
-
-   // botões de controle na janela
-   private JButton btnPlay;
-
-   private JButton btnPause;
-
-   private JButton btnStop;
 
    /**
     * Lança a aplicação
@@ -108,11 +103,38 @@ public class Syntext extends JFrame
          System.out.println( "LAF error: " + e );
       }
 
-      // inicializa os botões com o novo estilo
-      btnPlay = new JButton( PLAY );
-      btnPause = new JButton( PAUSE );
-      btnStop = new JButton( STOP );
-      play = new Play( btnStop );
+      // inicializa o player utilizando listener
+      JButton btnStop = new JButton( STOP );
+      ManagedPlayerListener mpListener = new ManagedPlayerListener()
+      {
+
+         @Override
+         public void onFinished()
+         {
+            btnStop.doClick();
+         }
+
+         @Override
+         public void onPaused()
+         {}
+
+         @Override
+         public void onReset()
+         {}
+
+         @Override
+         public void onResumed()
+         {}
+
+         @Override
+         public void onSeek( long arg0 )
+         {}
+
+         @Override
+         public void onStarted( Sequence arg0 )
+         {}
+      };
+      play = new Play( mpListener );
 
       // Configuraçõs da janela
       frmSyntext = new JFrame();
@@ -216,6 +238,8 @@ public class Syntext extends JFrame
 
       ////////////////// BUTTONS
       // Inicializando botões
+      JButton btnPlay = new JButton( PLAY );
+      JButton btnPause = new JButton( PAUSE );
       JButton btnLoad = new JButton( "Carregar arquivo..." );
       JButton btnDownload = new JButton( "Salvar em formato Midi" );
 
